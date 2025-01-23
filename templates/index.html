@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpcall Alert System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <img src="../static/img.png" alt="image">
+        <h1>Real-Time Helpcall System</h1>
+
+        <div id="latest-help-call" class="help-call">
+            <h2>Latest Help Call</h2>
+            <p id="help-call-text">Waiting for the latest help call...</p>
+            <button id="accept-help-call" onclick="acceptHelpCall()">Accept</button>
+        </div>
+
+        <form method="POST">
+            <label for="helpcall_alert_station">Helpcall Alert Station:</label>
+            <select name="helpcall_alert_station" id="helpcall_alert_station">
+                {% for station in stations %}
+                    <option value="{{ station }}">{{ station }}</option>
+                {% endfor %}
+            </select>
+            <label for="station_name">Station Name:</label>
+            <select name="station_name" id="station_name">
+                <option value="Station 1">Station 1</option>
+                <option value="Station 2">Station 2</option>
+                <option value="Station 3">Station 3</option>
+                <option value="Station 4">Station 4</option>
+            </select>
+            <label for="operator_name">Operator Name:</label>
+            <select name="operator_name" id="operator_name">
+                <option value="lokesh">lokesh</option>
+                <option value="ashok">ashok</option>
+                <option value="arvind">arvind</option>
+                <option value="ramu">ramu</option>
+            </select>
+            <label for="problem_categories">Problem Categories:</label>
+            <select name="problem_categories" id="problem_categories">
+                <option value="Part_Shortage">Part_Shortage</option>
+                <option value="Process_Delay">Process_Delay</option>
+                <option value="Quality_Issue_Own_Station">Quality_Issue_Own_Station</option>
+                <option value="Quality_Issue_UP_Station">Quality_Issue_UP_Station</option>
+                <option value="Equipment_Break_Down">Equipment_Break_Down</option>
+                <option value="Tool Issue">Tool Issue</option>
+                <option value="Matrial_Shortage">Matrial_Shortage</option>
+                <option value="Personal_Health_Issue">Personal_Health_Issue</option>
+                <option value="Safety_Issue">Safety_Issue</option>
+                <option value="Rest_Room">Rest_Room</option>
+            </select>
+            <label for="problem_description">Problem Description:</label>
+            <textarea name="problem_description" id="problem_description" placeholder="Speak" required></textarea>
+            <label for="action_taken">Action Taken:</label>
+            <textarea name="action_taken" id="action_taken" placeholder="Speak" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        {% if message %}
+            <div class="alert">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        let helpCallAccepted = false;
+        let currentHelpCall = null;
+        let audio = new Audio();
+
+        function updateHelpCall(latestCall) {
+            const helpCallText = document.getElementById("help-call-text");
+            const helpCallDiv = document.getElementById("latest-help-call");
+
+            helpCallText.textContent = latestCall;
+
+            if (!helpCallAccepted || currentHelpCall !== latestCall) {
+                helpCallDiv.classList.add("blinking-red");
+                helpCallDiv.classList.remove("green");
+                playAudio(latestCall);
+                currentHelpCall = latestCall;
+                helpCallAccepted = false;
+            }
+        }
+
+        function acceptHelpCall() {
+            helpCallAccepted = true;
+            const helpCallDiv = document.getElementById("latest-help-call");
+            helpCallDiv.classList.remove("blinking-red");
+            helpCallDiv.classList.add("green");
+            stopAudio();
+        }
+
+        function playAudio(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(speech);
+            audio.src = URL.createObjectURL(new Blob([speech], { type: 'audio/wav' }));
+            audio.play();
+        }
+
+        function stopAudio() {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+        // Poll the server for the latest help call
+        setInterval(async () => {
+            const response = await fetch("/latest-help-call");
+            const data = await response.json();
+            if (data.latest_call) {
+                updateHelpCall(data.latest_call);
+            }
+        }, 3000); // Poll every 3 seconds
+    </script>
+</body>
+</html>
