@@ -14,7 +14,7 @@ import threading
 import pyttsx3  # For text-to-speech
 
 # Path to your ChromeDriver executable
-chromedriver_path = r"C:/Users/innov_e9dohn9/projects/Help_Call/Help-Call-Automation-main/chromedriver-win64/chromedriver.exe"  # Update the path to your ChromeDriver
+chromedriver_path = r"C:\Users\TANSAM-3\Documents\GitHub\helpcall\chromedriver-win64\chromedriver.exe"  # Update the path to your ChromeDriver
 
 # Set Chrome options
 chrome_options = webdriver.ChromeOptions()

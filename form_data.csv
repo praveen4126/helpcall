@@ -1,0 +1,4 @@
+Date,Shift,Station Name,Operator Name,Problem Categories,Raised Time,Closed Time,Concern Category,Problem Description,Action Taken
+2025/01/23,1st_Shift,Station 1,lokesh,Part_Shortage,#2TRIM_A,2025/01/23 04:07:49 PM,STG 13 RH QRQC Help Stop,da,AS
+2025/01/23,1st_Shift,Station 1,lokesh,Part_Shortage,#2TRIM_A,2025/01/23 04:08:11 PM,STG 09 LH QRQC Stop,DF,DS
+2025/01/23,1st_Shift,Station 1,lokesh,Part_Shortage,#2TRIM_A,2025/01/23 04:10:09 PM,STG 09 LH QRQC Stop,fsd,df
